@@ -1,0 +1,1 @@
+export { DraftStorage } from '../../infrastructure/storage/draft-storage';
