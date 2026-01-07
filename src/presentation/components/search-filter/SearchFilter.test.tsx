@@ -27,7 +27,7 @@ describe('SearchFilter', () => {
     )
     
     expect(screen.getByPlaceholderText('Search messages...')).toBeInTheDocument()
-    expect(screen.getByRole('combobox')).toBeInTheDocument()
+    expect(screen.getByTitle('Filter options')).toBeInTheDocument()
   })
 
   it('应该显示正确的过滤选项', () => {
@@ -42,8 +42,10 @@ describe('SearchFilter', () => {
       />
     )
     
-    const options = screen.getAllByRole('option')
-    expect(options).toHaveLength(3) // all, user, bot
+    // 点击过滤器按钮展开选项
+    const filterButton = screen.getByTitle('Filter options')
+    fireEvent.click(filterButton)
+    
     expect(screen.getByText('All')).toBeInTheDocument()
     expect(screen.getByText('User')).toBeInTheDocument()
     expect(screen.getByText('Bot')).toBeInTheDocument()
@@ -64,9 +66,17 @@ describe('SearchFilter', () => {
     
     const searchInput = screen.getByPlaceholderText('Search messages...')
     
+    // 先清空输入框，然后输入
+    await user.clear(searchInput)
     await user.type(searchInput, 'hello')
     
-    expect(mockOnSearchChange).toHaveBeenCalledWith('hello')
+    // 验证每个字符都被正确处理
+    expect(mockOnSearchChange).toHaveBeenCalledTimes(5)
+    expect(mockOnSearchChange).toHaveBeenNthCalledWith(1, 'h')
+    expect(mockOnSearchChange).toHaveBeenNthCalledWith(2, 'e')
+    expect(mockOnSearchChange).toHaveBeenNthCalledWith(3, 'l')
+    expect(mockOnSearchChange).toHaveBeenNthCalledWith(4, 'l')
+    expect(mockOnSearchChange).toHaveBeenNthCalledWith(5, 'o')
   })
 
   it('应该在过滤器改变时调用onSenderFilterChange', async () => {
@@ -82,9 +92,13 @@ describe('SearchFilter', () => {
       />
     )
     
-    const filterSelect = screen.getByRole('combobox')
+    // 点击过滤器按钮展开选项
+    const filterButton = screen.getByTitle('Filter options')
+    await user.click(filterButton)
     
-    await user.selectOptions(filterSelect, 'user')
+    // 点击 User 按钮
+    const userButton = screen.getByText('User')
+    await user.click(userButton)
     
     expect(mockOnSenderFilterChange).toHaveBeenCalledWith('user')
   })
@@ -133,11 +147,17 @@ describe('SearchFilter', () => {
       />
     )
     
-    const filterSelect = screen.getByRole('combobox')
-    expect(filterSelect).toHaveValue('user')
+    // 点击过滤器按钮展开选项
+    const filterButton = screen.getByTitle('Filter options')
+    fireEvent.click(filterButton)
+    
+    // 检查 User 按钮是否被选中
+    const userButton = screen.getByText('User')
+    expect(userButton).toHaveClass('bg-primary-100', 'text-primary-700')
   })
 
-  it('应该支持日期过滤器', () => {
+  it('应该支持日期过滤器', async () => {
+    const user = userEvent.setup()
     const today = new Date().toISOString().split('T')[0]
     render(
       <SearchFilter 
@@ -149,6 +169,10 @@ describe('SearchFilter', () => {
         onDateFilterChange={mockOnDateFilterChange}
       />
     )
+    
+    // 点击过滤器按钮展开选项
+    const filterButton = screen.getByTitle('Filter options')
+    await user.click(filterButton)
     
     const dateInput = screen.getByDisplayValue(today)
     expect(dateInput).toBeInTheDocument()

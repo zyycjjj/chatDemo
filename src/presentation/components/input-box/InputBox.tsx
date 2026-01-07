@@ -22,6 +22,14 @@ export const InputBox: React.FC<InputBoxProps> = ({
     handleCompositionEnd,
   } = useInputBox({ onSendMessage, disabled });
 
+  // 限制消息长度为2000字符
+  const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value;
+    if (newValue.length <= 2000) {
+      setMessage(newValue);
+    }
+  };
+
   return (
     <div data-testid="input-box" className="border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-4">
       <div className="max-w-4xl mx-auto">
@@ -31,7 +39,7 @@ export const InputBox: React.FC<InputBoxProps> = ({
               data-testid="message-input"
               ref={textareaRef}
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={handleMessageChange}
               onKeyDown={handleKeyDown}
               onCompositionStart={handleCompositionStart}
               onCompositionEnd={handleCompositionEnd}
