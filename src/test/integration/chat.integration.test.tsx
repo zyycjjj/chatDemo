@@ -1,8 +1,9 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { ChatPage } from '@/presentation/pages/chat/ChatPage'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { ChatPage } from '../../presentation/pages/chat/ChatPage'
 import { server } from '../mocks/server'
-import { rest } from 'msw'
+import { http } from 'msw'
 
 // Mock localStorage
 const localStorageMock = {
@@ -66,10 +67,10 @@ describe('Chat Integration Tests', () => {
   it('应该处理发送失败和重试', async () => {
     // 模拟发送失败
     server.use(
-      rest.post('/api/messages', (req, res, ctx) => {
-        return res(
-          ctx.status(500),
-          ctx.json({ success: false, error: 'Network error' })
+      http.post('/api/messages', ({ request }) => {
+        return Response.json(
+          { success: false, error: 'Network error' },
+          { status: 500 }
         )
       })
     )

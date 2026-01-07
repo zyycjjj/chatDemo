@@ -13,6 +13,7 @@ interface MessageListProps {
   onDelete: (messageId: number) => void;
   onRecall: (messageId: number) => void;
   dateFilter?: string | null;
+  searchQuery?: string;
 }
 
 export const MessageList: React.FC<MessageListProps> = React.memo(({
@@ -24,6 +25,7 @@ export const MessageList: React.FC<MessageListProps> = React.memo(({
   onDelete,
   onRecall,
   dateFilter,
+  searchQuery,
 }) => {
   const listContainerRef = useRef<HTMLDivElement>(null);
   const isLoadingMoreRef = useRef(false);
@@ -122,6 +124,7 @@ export const MessageList: React.FC<MessageListProps> = React.memo(({
         </div>
       )}
       <div 
+        data-testid="message-list"
         className="overflow-y-auto flex-1 px-4 pt-4" 
         ref={listContainerRef}
       >
@@ -137,15 +140,20 @@ export const MessageList: React.FC<MessageListProps> = React.memo(({
 
             const enhancedMessage = item.data as EnhancedMessage;
             return (
-              <MessageItem
+              <div 
                 key={enhancedMessage.message.id}
-                message={enhancedMessage.message}
-                onRetry={onRetry}
-                onDelete={onDelete}
-                onRecall={onRecall}
-                showAvatar={enhancedMessage.showAvatar}
-                showTail={enhancedMessage.showTail}
-              />
+                data-message-id={enhancedMessage.message.id}
+              >
+                <MessageItem
+                  message={enhancedMessage.message}
+                  onRetry={onRetry}
+                  onDelete={onDelete}
+                  onRecall={onRecall}
+                  showAvatar={enhancedMessage.showAvatar}
+                  showTail={enhancedMessage.showTail}
+                  searchQuery={searchQuery}
+                />
+              </div>
             );
           })
         ) : (

@@ -33,6 +33,7 @@ export const ChatPage: React.FC = () => {
     handleDeleteMessage,
     handleRecallMessage,
     handleScrollToBottom,
+    handleScrollToSearchResult,
   } = useChatPage();
 
   useEffect(() => {
@@ -44,24 +45,33 @@ export const ChatPage: React.FC = () => {
     });
   }, [handleScrollToBottom]);
 
+  // 搜索时自动滚动到第一个匹配结果
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      setTimeout(() => {
+        handleScrollToSearchResult();
+      }, 300); // 等待DOM更新
+    }
+  }, [searchQuery, handleScrollToSearchResult]);
+
 
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <header className="bg-white shadow-lg border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div data-testid="chat-page" className="flex flex-col h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <header className="bg-white border-b border-gray-200 shadow-lg">
+        <div className="px-4 mx-auto max-w-6xl sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
+              <div className="flex justify-center items-center w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl shadow-lg">
                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <h1 className="text-xl font-bold text-transparent text-gray-900 bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
                   Chat Demo
                 </h1>
-                <p className="text-sm text-gray-500 flex items-center gap-1">
+                <p className="flex gap-1 items-center text-sm text-gray-500">
                   <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                     React 19 + TypeScript + DDD
                   </span>
@@ -91,8 +101,8 @@ export const ChatPage: React.FC = () => {
         offlineCount={offlineQueue.length} 
       />
 
-      <main className="flex-1 flex flex-col max-w-6xl mx-auto w-full px-4 overflow-hidden">
-        <div className="bg-white rounded-t-xl shadow-sm border border-gray-200 border-b-0 flex-shrink-0">
+      <main className="flex overflow-hidden flex-col flex-1 px-4 mx-auto w-full max-w-6xl">
+        <div className="flex-shrink-0 bg-white rounded-t-xl border border-b-0 border-gray-200 shadow-sm">
           <SearchFilter
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
@@ -103,21 +113,21 @@ export const ChatPage: React.FC = () => {
           />
         </div>
         
-        <div className="flex-1 overflow-hidden bg-white rounded-b-xl shadow-sm border border-gray-200 flex flex-col min-h-0">
+        <div className="flex overflow-hidden flex-col flex-1 min-h-0 bg-white rounded-b-xl border border-gray-200 shadow-sm">
           {error && (
-            <div className="bg-red-50 border-l-4 border-red-400 p-4 m-4 rounded-lg flex-shrink-0">
+            <div className="flex-shrink-0 p-4 m-4 bg-red-50 rounded-lg border-l-4 border-red-400">
               <div className="flex">
                 <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                  <svg className="w-5 h-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                   </svg>
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm text-red-700 font-medium">
+                  <p className="text-sm font-medium text-red-700">
                     {error}
                   </p>
                 </div>
-                <div className="ml-auto pl-3">
+                <div className="pl-3 ml-auto">
                   <div className="-mx-1.5 -my-1.5">
                     <button
                       onClick={() => window.location.reload()}
@@ -133,7 +143,7 @@ export const ChatPage: React.FC = () => {
             </div>
           )}
 
-          <div className="relative flex-1 overflow-hidden min-h-0">
+          <div className="overflow-hidden relative flex-1 min-h-0">
             <MessageList
               messages={messages}
               loading={loading}
@@ -143,6 +153,7 @@ export const ChatPage: React.FC = () => {
               onDelete={handleDeleteMessage}
               onRecall={handleRecallMessage}
               dateFilter={dateFilter}
+              searchQuery={searchQuery}
             />
             
             <NewMessageAlert

@@ -1,6 +1,7 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { InputBox } from '@/presentation/components/input-box/InputBox'
+import { InputBox } from './InputBox'
 
 describe('InputBox', () => {
   const mockOnSendMessage = vi.fn()

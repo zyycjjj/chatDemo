@@ -348,6 +348,14 @@ export const getFilteredMessages = (state: MessageState & MessageActions) => {
     );
   }
   
+  // Filter by date
+  if (state.dateFilter) {
+    filtered = filtered.filter(message => {
+      const messageDate = message.getFormattedDate();
+      return messageDate === state.dateFilter;
+    });
+  }
+  
   // Filter by search query
   if (state.searchQuery.trim()) {
     const query = state.searchQuery.toLowerCase().trim();

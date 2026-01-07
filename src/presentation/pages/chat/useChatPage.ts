@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef } from 'react';
 import { useMessageStore } from '../../../application/stores/message-store';
 import { Message } from '../../../domain/entities/message';
+import { getFilteredMessages } from '../../../application/stores/message-store';
 
 export const useChatPage = () => {
   const messageStore = useMessageStore();
@@ -13,9 +14,10 @@ export const useChatPage = () => {
     recallMessage,
     resetUnreadCount,
     setIsAtBottom,
+    searchQuery,
   } = messageStore;
 
-  const messages = useMemo(() => storeMessages, [storeMessages]);
+  const messages = useMemo(() => getFilteredMessages(messageStore), [messageStore]);
   const messageListRef = useRef<HTMLDivElement>(null);
 
   const handleScrollToBottom = useCallback(() => {
@@ -36,6 +38,24 @@ export const useChatPage = () => {
     resetUnreadCount();
     setIsAtBottom(true);
   }, [resetUnreadCount, setIsAtBottom]);
+
+  const handleScrollToSearchResult = useCallback(() => {
+    if (!searchQuery.trim() || !messageListRef.current) return;
+    
+    // 查找第一个匹配的消息元素
+    const highlightedElements = messageListRef.current.querySelectorAll('.bg-yellow-200');
+    if (highlightedElements.length > 0) {
+      const firstHighlighted = highlightedElements[0] as HTMLElement;
+      const messageContainer = firstHighlighted.closest('[data-message-id]');
+      
+      if (messageContainer) {
+        messageContainer.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center' 
+        });
+      }
+    }
+  }, [searchQuery]);
 
   const handleScroll = useCallback(
     (scrollTop: number, scrollHeight: number, clientHeight: number) => {
@@ -121,5 +141,6 @@ export const useChatPage = () => {
     handleRecallMessage,
     handleScrollToBottom,
     handleScroll,
+    handleScrollToSearchResult,
   };
 };

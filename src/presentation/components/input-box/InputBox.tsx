@@ -23,11 +23,12 @@ export const InputBox: React.FC<InputBoxProps> = ({
   } = useInputBox({ onSendMessage, disabled });
 
   return (
-    <div className="border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-4">
+    <div data-testid="input-box" className="border-t border-gray-200 bg-gradient-to-b from-white to-gray-50 p-4">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-3">
           <div className="flex-1 relative">
             <textarea
+              data-testid="message-input"
               ref={textareaRef}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -41,12 +42,13 @@ export const InputBox: React.FC<InputBoxProps> = ({
               style={{ minHeight: '48px', maxHeight: '120px' }}
             />
             
-            <div className="absolute right-3 bottom-3 text-xs text-gray-400 bg-white px-1 rounded">
+            <div data-testid="char-count" className="absolute right-3 bottom-3 text-xs text-gray-400 bg-white px-1 rounded">
               {message.length}/2000
             </div>
           </div>
 
           <button
+            data-testid="send-button"
             onClick={handleSend}
             disabled={!message.trim() || disabled}
             className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 disabled:from-gray-400 disabled:to-gray-500 text-white px-6 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 min-w-[100px] justify-center transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"

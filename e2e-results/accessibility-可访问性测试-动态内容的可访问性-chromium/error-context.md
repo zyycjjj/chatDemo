@@ -1554,21 +1554,32 @@
           - img [ref=e2429]
           - button [ref=e2433] [cursor=pointer]:
             - img [ref=e2434]
-    - generic [ref=e2438]:
-      - generic [ref=e2439]:
-        - generic [ref=e2440]:
-          - textbox "Type a message..." [ref=e2441]
-          - generic [ref=e2442]: 0/2000
-        - button "Send" [disabled] [ref=e2443]:
+        - generic [ref=e2436]:
+          - generic [ref=e2437]:
+            - paragraph [ref=e2439]: Accessibility test message
+            - generic [ref=e2440]:
+              - text: 03:31 PM
+              - generic [ref=e2441]:
+                - img [ref=e2442]
+                - generic [ref=e2444]: Sent
+          - img [ref=e2446]
+          - button [ref=e2450] [cursor=pointer]:
+            - img [ref=e2451]
+    - generic [ref=e2455]:
+      - generic [ref=e2456]:
+        - generic [ref=e2457]:
+          - textbox "Type a message..." [ref=e2458]
+          - generic [ref=e2459]: 0/2000
+        - button "Send" [disabled] [ref=e2460]:
           - text: Send
-          - img [ref=e2444]
-      - generic [ref=e2446]:
-        - generic [ref=e2447]:
-          - img [ref=e2448]
-          - generic [ref=e2450]: Press Enter to send, Shift+Enter for new line
-        - generic [ref=e2451]:
-          - button "Attach file" [ref=e2452] [cursor=pointer]:
-            - img [ref=e2453]
-          - button "Add emoji" [ref=e2455] [cursor=pointer]:
-            - img [ref=e2456]
+          - img [ref=e2461]
+      - generic [ref=e2463]:
+        - generic [ref=e2464]:
+          - img [ref=e2465]
+          - generic [ref=e2467]: Press Enter to send, Shift+Enter for new line
+        - generic [ref=e2468]:
+          - button "Attach file" [ref=e2469] [cursor=pointer]:
+            - img [ref=e2470]
+          - button "Add emoji" [ref=e2472] [cursor=pointer]:
+            - img [ref=e2473]
 ```

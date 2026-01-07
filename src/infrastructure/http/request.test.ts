@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { requestClient } from '@/infrastructure/http/request'
+import { requestClient } from './request'
 
 // Mock fetch
 global.fetch = vi.fn()

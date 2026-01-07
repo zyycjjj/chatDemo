@@ -23,7 +23,7 @@
       - button "Filter options" [ref=e29] [cursor=pointer]:
         - img [ref=e30]
     - generic [ref=e34]:
-      - generic [ref=e36]: 1月7日
+      - generic [ref=e36]: 1月4日
       - generic [ref=e37]:
         - generic [ref=e41]: Dec 15, 2025
         - generic [ref=e42]:

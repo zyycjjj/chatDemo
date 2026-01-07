@@ -30,7 +30,7 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({
   });
 
   return (
-    <div className="border-b border-gray-200 bg-white px-4 py-3">
+    <div data-testid="search-filter" className="border-b border-gray-200 bg-white px-4 py-3">
       <div className="flex items-center gap-3">
         <div className="flex-1 relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">

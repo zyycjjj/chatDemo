@@ -9,6 +9,7 @@ interface MessageItemProps {
   onRecall?: (messageId: number) => void;
   showAvatar?: boolean;
   showTail?: boolean;
+  searchQuery?: string;
 }
 
 export const MessageItem: React.FC<MessageItemProps> = ({
@@ -18,13 +19,15 @@ export const MessageItem: React.FC<MessageItemProps> = ({
   onRecall,
   showAvatar = true,
   showTail = true,
+  searchQuery = '',
 }) => {
   const { isUser, avatarContent, timeDisplay, messageContent, actionButton } = getMessageItemLogic(
     message,
     showAvatar,
     onRetry,
     onDelete,
-    onRecall
+    onRecall,
+    searchQuery
   );
 
   // 根据分组状态调整间距
@@ -32,6 +35,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({
   
   return (
     <div
+      data-testid="message-item"
       className={`flex ${isUser ? 'justify-end' : 'justify-start'} ${messageSpacing} group animate-fade-in`}
     >
       {!isUser && avatarContent}
