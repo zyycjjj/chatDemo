@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { MessageList } from '../../components/message-list';
 import { InputBox } from '../../components/input-box';
 import { SearchFilter } from '../../components/search-filter';
@@ -15,23 +15,36 @@ export const ChatPage: React.FC = () => {
     error,
     searchQuery,
     senderFilter,
+    dateFilter,
     isOnline,
     offlineQueue,
     unreadCount,
+    hasMore,
     setSearchQuery,
     setSenderFilter,
+    setDateFilter,
+    loadMoreMessages,
   } = messageStore;
 
   const {
     messages,
-    messageListRef,
     handleSendMessage,
     handleRetryMessage,
     handleDeleteMessage,
     handleRecallMessage,
     handleScrollToBottom,
-    handleScroll,
   } = useChatPage();
+
+  useEffect(() => {
+    messageStore.loadInitialMessages().then(() => {
+      // 初始化加载后滚动到底部显示最新消息
+      setTimeout(() => {
+        handleScrollToBottom();
+      }, 100);
+    });
+  }, [handleScrollToBottom]);
+
+
 
   return (
     <div className="flex flex-col h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -85,6 +98,8 @@ export const ChatPage: React.FC = () => {
             onSearchChange={setSearchQuery}
             senderFilter={senderFilter}
             onSenderFilterChange={setSenderFilter}
+            dateFilter={dateFilter}
+            onDateFilterChange={setDateFilter}
           />
         </div>
         
@@ -109,7 +124,7 @@ export const ChatPage: React.FC = () => {
                       className="inline-flex bg-red-50 p-1.5 text-red-500 hover:bg-red-100 rounded-md transition-colors"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.0 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                       </svg>
                     </button>
                   </div>
@@ -119,19 +134,16 @@ export const ChatPage: React.FC = () => {
           )}
 
           <div className="relative flex-1 overflow-hidden min-h-0">
-            <div
-              ref={messageListRef}
-              onScroll={handleScroll}
-              className="h-full overflow-y-auto"
-            >
-              <MessageList
-                messages={messages}
-                loading={loading}
-                onRetry={handleRetryMessage}
-                onDelete={handleDeleteMessage}
-                onRecall={handleRecallMessage}
-              />
-            </div>
+            <MessageList
+              messages={messages}
+              loading={loading}
+              hasMore={hasMore}
+              onLoadMore={loadMoreMessages}
+              onRetry={handleRetryMessage}
+              onDelete={handleDeleteMessage}
+              onRecall={handleRecallMessage}
+              dateFilter={dateFilter}
+            />
             
             <NewMessageAlert
               count={unreadCount}

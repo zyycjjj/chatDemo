@@ -17,8 +17,10 @@ app.use(express.json());
 let messageIdCounter = 1000;
 const messages = [];
 
-function generateMockMessage(id, isUser = true) {
-  const timestamp = new Date(Date.now() - randomInt(0, 7 * 24 * 60 * 60 * 1000));
+function generateMockMessage(id, isUser = true, daysAgo = null) {
+  // 如果指定了daysAgo，使用指定天数；否则随机生成过去30天内的消息
+  const daysOffset = daysAgo !== null ? daysAgo : randomInt(0, 30);
+  const timestamp = new Date(Date.now() - daysOffset * 24 * 60 * 60 * 1000 - randomInt(0, 23 * 60 * 60 * 1000));
   
   return {
     id,
@@ -30,26 +32,48 @@ function generateMockMessage(id, isUser = true) {
   };
 }
 
-for (let i = 0; i < 200; i++) {
-  messages.push(generateMockMessage(messageIdCounter++, i % 3 !== 0));
+// 生成过去30天的消息数据，每天大约5-15条消息
+const messagesPerDay = 8;
+const daysToGenerate = 30;
+
+for (let day = 0; day < daysToGenerate; day++) {
+  const messagesInThisDay = randomInt(5, 15);
+  const todayMessages = [];
+  
+  for (let i = 0; i < messagesInThisDay; i++) {
+    const isUser = randomInt(1, 10) <= 6; // 60% 概率是用户消息
+    todayMessages.push(generateMockMessage(messageIdCounter++, isUser, day));
+  }
+  
+  // 将当天消息按时间排序
+  todayMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+  messages.push(...todayMessages);
 }
 
-messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+// 确保所有消息按时间排序（最新的在前面）
+messages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
 app.get('/api/messages', (req, res) => {
   const { page = 1, limit = 20, before } = req.query;
   
   let filteredMessages = messages;
   
+  // 如果有before参数，获取该时间戳之前的消息（用于分页加载）
   if (before) {
     filteredMessages = messages.filter(msg => 
       new Date(msg.timestamp) < new Date(before)
     );
   }
   
+  // 按时间戳倒序排列（最新的在前）
+  filteredMessages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  
   const startIndex = (page - 1) * limit;
   const endIndex = startIndex + parseInt(limit);
   const paginatedMessages = filteredMessages.slice(startIndex, endIndex);
+  
+  // 将结果按时间正序排列（最旧的在前），这样前端显示时新的在底部
+  paginatedMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
   
   res.json({
     success: true,

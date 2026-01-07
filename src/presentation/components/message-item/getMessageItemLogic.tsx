@@ -50,7 +50,7 @@ export const getMessageItemLogic = (
 
   const messageContent = (
     <>
-      <p className={`text-sm leading-relaxed whitespace-pre-wrap break-words ${message.isRecalled() ? 'italic text-gray-500' : ''}`}>
+      <p className={`text-sm leading-relaxed whitespace-pre-wrap break-words overflow-wrap-anywhere ${message.isRecalled() ? 'italic text-gray-500' : ''}`}>
         {message.content}
       </p>
       

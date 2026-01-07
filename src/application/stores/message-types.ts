@@ -8,6 +8,7 @@ export interface MessageState {
   currentPage: number;
   searchQuery: string;
   senderFilter: 'all' | 'user' | 'bot';
+  dateFilter: string | null; // Format: YYYY-MM-DD
   draftMessage: string;
   unreadCount: number;
   isAtBottom: boolean;
@@ -35,6 +36,7 @@ export interface MessageActions {
   setCurrentPage: (page: number) => void;
   setSearchQuery: (query: string) => void;
   setSenderFilter: (filter: 'all' | 'user' | 'bot') => void;
+  setDateFilter: (date: string | null) => void;
   setDraftMessage: (draft: string) => void;
   incrementUnreadCount: () => void;
   resetUnreadCount: () => void;

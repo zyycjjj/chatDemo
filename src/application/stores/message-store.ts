@@ -31,6 +31,7 @@ const initialState: MessageState = {
   currentPage: 1,
   searchQuery: '',
   senderFilter: 'all',
+  dateFilter: null,
   draftMessage: '',
   unreadCount: 0,
   isAtBottom: true,
@@ -81,6 +82,8 @@ export const useMessageStore = create<MessageState & MessageActions>()(
         setSearchQuery: (query) => set({ searchQuery: query }),
 
         setSenderFilter: (filter) => set({ senderFilter: filter }),
+
+        setDateFilter: (date) => set({ dateFilter: date }),
 
         setDraftMessage: (draft) => {
           set({ draftMessage: draft });
@@ -165,7 +168,7 @@ export const useMessageStore = create<MessageState & MessageActions>()(
           setError(null);
 
           try {
-            const response = await requestClient.getMessages({ page: 1, limit: 20 });
+            const response = await requestClient.getMessages({ page: 1, limit: 200 });
             
             if (response.success && response.data) {
               const transformedMessages = response.data.messages.map(transformApiMessageToMessage);

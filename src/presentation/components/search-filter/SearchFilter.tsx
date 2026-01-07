@@ -6,6 +6,8 @@ interface SearchFilterProps {
   onSearchChange: (query: string) => void;
   senderFilter: 'all' | 'user' | 'bot';
   onSenderFilterChange: (filter: 'all' | 'user' | 'bot') => void;
+  dateFilter: string | null;
+  onDateFilterChange: (date: string | null) => void;
 }
 
 export const SearchFilter: React.FC<SearchFilterProps> = ({
@@ -13,6 +15,8 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({
   onSearchChange,
   senderFilter,
   onSenderFilterChange,
+  dateFilter,
+  onDateFilterChange,
 }) => {
   const {
     isExpanded,
@@ -67,42 +71,67 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({
       </div>
 
       {isExpanded && (
-        <div className="mt-3 flex items-center gap-2">
-          <span className="text-sm text-gray-600">Filter by sender:</span>
-          
-          <div className="flex gap-1">
-            <button
-              onClick={() => handleSenderFilterChange('all')}
-              className={`px-3 py-1 text-sm rounded-md transition-colors ${
-                senderFilter === 'all'
-                  ? 'bg-primary-100 text-primary-700'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              All
-            </button>
+        <div className="mt-3 space-y-3">
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-600">Filter by sender:</span>
             
-            <button
-              onClick={() => handleSenderFilterChange('user')}
-              className={`px-3 py-1 text-sm rounded-md transition-colors ${
-                senderFilter === 'user'
-                  ? 'bg-primary-100 text-primary-700'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              User
-            </button>
+            <div className="flex gap-1">
+              <button
+                onClick={() => handleSenderFilterChange('all')}
+                className={`px-3 py-1 text-sm rounded-md transition-colors ${
+                  senderFilter === 'all'
+                    ? 'bg-primary-100 text-primary-700'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                All
+              </button>
+              
+              <button
+                onClick={() => handleSenderFilterChange('user')}
+                className={`px-3 py-1 text-sm rounded-md transition-colors ${
+                  senderFilter === 'user'
+                    ? 'bg-primary-100 text-primary-700'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                User
+              </button>
+              
+              <button
+                onClick={() => handleSenderFilterChange('bot')}
+                className={`px-3 py-1 text-sm rounded-md transition-colors ${
+                  senderFilter === 'bot'
+                    ? 'bg-primary-100 text-primary-700'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                Bot
+              </button>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-600">Filter by date:</span>
             
-            <button
-              onClick={() => handleSenderFilterChange('bot')}
-              className={`px-3 py-1 text-sm rounded-md transition-colors ${
-                senderFilter === 'bot'
-                  ? 'bg-primary-100 text-primary-700'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              Bot
-            </button>
+            <input
+              type="date"
+              value={dateFilter || ''}
+              onChange={(e) => onDateFilterChange(e.target.value || null)}
+              className="px-3 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+            />
+            
+            {dateFilter && (
+              <button
+                onClick={() => onDateFilterChange(null)}
+                className="px-2 py-1 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                title="Clear date filter"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
           </div>
         </div>
       )}
