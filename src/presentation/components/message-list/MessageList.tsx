@@ -91,9 +91,9 @@ export const MessageList: React.FC<MessageListProps> = React.memo(({
       }
       
       if (child.classList.contains('date-separator')) {
-        const dateText = child.textContent;
-        if (dateText) {
-          latestDate = dateText;
+        const dateAttr = child.getAttribute('data-date');
+        if (dateAttr) {
+          latestDate = dateAttr;
         }
       }
     }
@@ -129,7 +129,7 @@ export const MessageList: React.FC<MessageListProps> = React.memo(({
           messagesWithDates.map((item, index) => {
             if (item.type === 'date') {
               return (
-                <div key={`date-${item.data}`} className="my-4 date-separator">
+                <div key={`date-${item.data}`} className="my-4 date-separator" data-date={item.data}>
                   <DateSeparator date={new Date(item.data as string)} />
                 </div>
               );
